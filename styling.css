@@ -1,0 +1,20 @@
+body {
+  margin: 0;
+  background-color: black;
+}
+
+#root { 
+  padding: 3rem;
+  text-align: center
+}
+
+#root h1 {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  /* font-size:; */
+  color: white;
+}
+
+#root canvas {
+  display: block;
+  margin: 0 auto;
+}
