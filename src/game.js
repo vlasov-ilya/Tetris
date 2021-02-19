@@ -2,28 +2,7 @@ export default class Game {
   score = 0;
   lines = 0;
   level = 0;
-  playfield = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  ];
+  playfield = this.cretePlayfield();
   activePiece = {
     x: 0,
     y: 0,
@@ -37,6 +16,51 @@ export default class Game {
     ],
 
   };
+
+  getState() {
+    const playfield = this.cretePlayfield();
+    const { y: pieceY, x: pieceX, blocks } = this.activePiece;
+
+
+    for (let y = 0; y < this.playfield.length ; y++) {
+      playfield[y] = [];
+
+        for (let x = this.playfield[y].length; x < 10; x++) {
+          playfield[y][x]  = this.playfield[y][x];
+        }
+      }
+
+      for (let y = 0; y < blocks.length; y++) {
+        for (let x = 0; x < blocks[y]; x++) {
+          if (blocks[y][x]){
+            playfield[pieceY + y][pieceX + x] = this.activePiece.blocks[y][x];
+          }
+          
+        }
+        
+      }
+
+      return {
+        playfield
+      }
+  }
+
+  cretePlayfield() {
+    const playfield = [];
+
+    for (let y = 0; y < 20 ; y++) {
+      playfield[y] = [];
+
+        for (let x = 0; x < 10; x++) {
+          playfield[y][x]  = 0;
+        }
+      
+    }
+
+    return {
+      playfield
+    };
+  }
 
   movePieceLeft() {
     this.activePiece.x -= 1;
@@ -61,13 +85,13 @@ export default class Game {
   }
 
   rotatePiece() {
-      this.rotateBlocks();
+    this.rotateBlocks();
 
-      if (this.hasCollision()){
-        this.rotateBlocks(false);
-        
-      }
+    if (this.hasCollision()) {
+      this.rotateBlocks(false);
+
     }
+  }
 
 
   rotateBlocks(clockwise = true) {
@@ -80,7 +104,7 @@ export default class Game {
       for (let j = i; j < y - i; j++) {
         const temp = blocks[i][j];
 
-        if (clockwise){
+        if (clockwise) {
           blocks[i][j] = blocks[y - j][i];
           blocks[y - j][i] = blocks[y - i][y - j];
           blocks[y - i][y - j] = blocks[j][y - i];
@@ -96,7 +120,7 @@ export default class Game {
   }
 
   hasCollision() {
-    const { y: pieceY, x: pieceX, blocks } = this.activePiece
+    const { y: pieceY, x: pieceX, blocks } = this.activePiece;
 
     for (let y = 0; y < blocks.length; y++) {
       for (let x = 0; x < blocks[y].length; x++) {
