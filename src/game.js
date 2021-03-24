@@ -1,10 +1,19 @@
 export default class Game {
+  static points = {
+    '1': 40,
+    '2': 100,
+    '3': 300,
+    '4': 1200
+  };
   score = 0;
   lines = 0;
-  level = 0;
   playfield = this.cretePlayfield();
   activePiece = this.createPiece();
   nextPiece = this.createPiece();
+
+  get level(){
+    return Math.floor(this.lines * 0.1);
+  }
 
   getState() {
     const playfield = this.cretePlayfield();
@@ -21,12 +30,16 @@ export default class Game {
       for (let y = 0; y < blocks.length; y++) {
         for (let x = 0; x < blocks[y].length; x++) {
           if (blocks[y][x]){
-            playfield[pieceY + y][pieceX + x] = blocks[y][x];
+            playfield[pieceY + y][pieceX + x] = block[y][x];
           }
         } 
       }
 
       return {
+        score: this.score,
+        level: this.level,
+        lines: this.lines,
+        nextPiece: this.nextPiece,
         playfield
       }
   }
@@ -136,6 +149,8 @@ export default class Game {
     if (this.hasCollision()) {
       this.activePiece.y -= 1;
       this.lockPiece();
+      const clearedLines = this.clearLines();
+      this.updateScore(clearedLines);
       this.updatePices();
     }
   }
@@ -202,6 +217,43 @@ export default class Game {
           this.playfield[pieceY + y][pieceX + x] = blocks[y][x];
         }
       }
+    }
+  }
+
+  clearLines() {
+    const rows = 20;
+    const columes = 10;
+    let lines = [];
+
+    for (let y = rows - 1; y >= 0; y--) {
+      let numberOfBlocks = 0
+
+      for (let x = 0; x< columes; x++) {
+        if(this.playfield[y][x]) {
+          numberOfBlocks += 1;
+        }
+      }
+      
+      if (numberOfBlocks === 0) {
+        break;
+      } else if (numberOfBlocks < columes) {
+        continue;
+      } else if (numberOfBlocks === columes) {
+        lines.unshift(y);
+      }
+    }
+
+    for(let index of lines) {
+      this.playfield.splice(index, 1);
+      this.playfield.unshift(new Array(columes).fill(0));
+    }
+    return lines.length;
+  }
+
+  updateScore(clearedLines) {
+    if (clearedLines > 0) {
+      this.score += Game.points[clearedLines] * (this.level + 1);
+      this.lines += clearedLines;
     }
   }
 
