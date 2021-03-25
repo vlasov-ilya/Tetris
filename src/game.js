@@ -129,7 +129,7 @@ export default class Game {
     }
 
     piece.x = Math.floor((10 - piece.blocks[0].length)/2);
-    piece.y = 0;
+    piece.y = -1;
 
     return piece;
     
