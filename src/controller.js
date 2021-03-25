@@ -36,6 +36,7 @@ export default class Controller {
 
   updateView() {
     const state = this.game.getState()
+
     if(state.isGameOver) {
       this.view.renderGameOverScreen(state);
     }else if(!this.isPlaying){
@@ -63,7 +64,7 @@ export default class Controller {
   }
 
   handleKeyDown(event){
-    const state  =this.game.getState();
+    const state = this.game.getState();
     switch (event.keyCode) {
       case 13: //ENTER
         if (state.isGameOver){
@@ -76,19 +77,19 @@ export default class Controller {
         break;
       case 37: //left arrow
         this.game.movePieceLeft();
-        this.view.updateView();
+        this.updateView();
         break;
       case 38: //up arrow
         this.game.rotatePiece();
-        this.view.updateView();
+        this.updateView();
                 break;
       case 39: //right arrow
         this.game.movePieceRight();
-        this.view.updateView();
+        this.updateView();
                 break;
       case 40: //down arrow
         this.game.movePieceDown();
-        this.view.updateView();
+        this.updateView();
         this.stopTimer();
                 break;
     }
