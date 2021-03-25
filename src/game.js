@@ -5,18 +5,17 @@ export default class Game {
     '3': 300,
     '4': 1200
   };
-  score = 0;
-  lines = 0;
-  playfield = this.cretePlayfield();
-  activePiece = this.createPiece();
-  nextPiece = this.createPiece();
+  
+  constructor(){
+    this.reset()
+  }
 
   get level(){
     return Math.floor(this.lines * 0.1);
   }
 
   getState() {
-    const playfield = this.cretePlayfield();
+    const playfield = this.createPlayfield();
     const { y: pieceY, x: pieceX, blocks } = this.activePiece;
 
     for (let y = 0; y < this.playfield.length ; y++) {
@@ -30,7 +29,7 @@ export default class Game {
       for (let y = 0; y < blocks.length; y++) {
         for (let x = 0; x < blocks[y].length; x++) {
           if (blocks[y][x]){
-            playfield[pieceY + y][pieceX + x] = block[y][x];
+            playfield[pieceY + y][pieceX + x] = blocks[y][x];
           }
         } 
       }
@@ -40,30 +39,38 @@ export default class Game {
         level: this.level,
         lines: this.lines,
         nextPiece: this.nextPiece,
-        playfield
+        playfield,
+        isGameOver: this.topOut
       }
   }
 
-  cretePlayfield() {
+  reset(){
+    this.score = 0;
+    this.lines = 0;
+    this.topOut = false;
+    this.playfield = this.createPlayfield();
+    this.activePiece = this.createPiece();
+    this.nextPiece = this.createPiece();
+  }
+
+  createPlayfield() {
     const playfield = [];
 
     for (let y = 0; y < 20 ; y++) {
       playfield[y] = [];
 
-        for (let x = 0; x < 10; x++) {
-          playfield[y][x]  = 0;
-        }
+      { for (let x = 0; x < 10; x++) {
+        playfield[y][x]  = 0;
+      }}
     }
 
-    return {
-      playfield
-    };
+    return playfield;
   }
 
   createPiece() {
     const index = Math.floor(Math.random() *7);
     const type = 'IJLOSTZ'[index];
-    const piece = { };
+    const piece = {};
 
     switch(type) {
       case 'I':
@@ -73,21 +80,21 @@ export default class Game {
           [0,0,0,0],
           [0,0,0,0]
         ];
-        break
+        break;
       case 'J':
         piece.blocks = [
           [0,0,0],
           [2,2,2],
           [0,0,2]
         ];
-        break
+        break;
       case 'L':
         piece.blocks = [
           [0,0,0],
           [3,3,3],
           [3,0,0]
         ];
-        break
+        break;
       case 'O':
         piece.blocks = [
           [0,0,0,0],
@@ -95,28 +102,28 @@ export default class Game {
           [0,4,4,0],
           [0,0,0,0]
         ];
-        break
+        break;
       case 'S':
         piece.blocks = [
           [0,0,0],
           [0,5,5],
           [5,5,0]
         ];
-        break
+        break;
       case 'T':
         piece.blocks = [
           [0,0,0],
           [6,6,6],
           [0,6,0]
         ];
-        break
+        break;
       case 'Z':
         piece.blocks = [
           [0,0,0],
           [7,7,0],
           [0,7,7]
         ];
-        break
+        break;
       default:
         throw new Error('uknnown')
     }
@@ -132,7 +139,6 @@ export default class Game {
     this.activePiece.x -= 1;
     if (this.hasCollision()) {
       this.activePiece.x += 1;
-      // this.lockPiece();
     }
   }
 
@@ -140,11 +146,12 @@ export default class Game {
     this.activePiece.x += 1;
     if (this.hasCollision()) {
       this.activePiece.x -= 1;
-      // this.lockPiece();
     }
   }
 
   movePieceDown() {
+    if (this.topOut) return;
+
     this.activePiece.y += 1;
     if (this.hasCollision()) {
       this.activePiece.y -= 1;
@@ -152,6 +159,10 @@ export default class Game {
       const clearedLines = this.clearLines();
       this.updateScore(clearedLines);
       this.updatePices();
+    }
+
+    if(this.hasCollision()) {
+      this.topOut = true;
     }
   }
 

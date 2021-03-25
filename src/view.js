@@ -1,7 +1,7 @@
 export default class View {
   static colors = {
     '1': 'cyan',
-    '2': 'blie',
+    '2': 'blue',
     '3': 'orange',
     '4': 'yellow',
     '5': 'green',
@@ -28,9 +28,9 @@ export default class View {
     this.playfieldInnerHeight = this.playfieldHeight - this.playfieldBorderWidth * 2;
 
     this.blockWidth = this.playfieldInnerWidth / columns;
-    this.blochHeight = this.playfieldInnerHeight / rows;
+    this.blockHeight = this.playfieldInnerHeight / rows;
 
-    this.panelX = this.playfieldBorderWidth + 10;
+    this.panelX = this.playfieldWidth + 10;
     this.panelY = 0;
     this.panelWidth = this.width/3;
     this.panelHeight = this.height;
@@ -72,6 +72,8 @@ export default class View {
     this.context.textAlign = 'center';
     this.context.fillText("GAME OVER", this.width / 2, this.height /2 - 48);
     this.context.fillText(`Score: ${score}`, this.width / 2, this.height /2);
+    this.context.fillText("Press ENTER to restart", this.width / 2, this.height /2 + 48);
+
 
   }
 
@@ -81,15 +83,15 @@ export default class View {
 
   renderPlayfield({playfield}) {
     for (let y = 0; y < playfield.length; y++) {
-      for (let x = 0; x < line.length; x++) {
+      for (let x = 0; x < playfield[y].length; x++) {
         const block = playfield[y][x];
 
         if (block) {
           this.renderBlock(
-            this.panelX + (x * this.blockWidth), 
-            this.panelY + (y * this.blochHeight), 
+            this.playfieldX + (x * this.blockWidth), 
+            this.playfieldY + (y * this.blockHeight), 
             this.blockWidth, 
-            this.blochHeight, 
+            this.blockHeight, 
             View.colors[block])
         }
       }
@@ -111,16 +113,16 @@ export default class View {
     this.context.fillText(`Lines: ${lines}`, this.panelX, this.panelY + 48);
     this.context.fillText('Next:', this.panelX, this.panelY + 96);
 
-    for (let y = 0; y < nextPiese.blocks.length; y++) {
-      for (let x = 0; x < nextPiese.blocks[y].length; x++) {
-        const block = nextPiese.blocks[y][x];
+    for (let y = 0; y < nextPiese.block.length; y++) {
+      for (let x = 0; x < nextPiese.block[y].length; x++) {
+        const block = nextPiese.block[y][x];
 
         if(block){
           this.renderBlock(
             this.panelX + (x * this.blockWidth * 0.5),
-            this.panelY + 100 + (y * this.blochHeight* 0.5),
+            this.panelY + 100 + (y * this.blockHeight* 0.5),
             this.blockWidth * 0.5,
-            this.blochHeight * 0.5,
+            this.blockHeight * 0.5,
             View.colors[block]
           );
         }
