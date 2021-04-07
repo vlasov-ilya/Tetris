@@ -76,21 +76,29 @@ export default class Controller {
         }
         break;
       case 37: //left arrow
+      if(this.isPlaying){
         this.game.movePieceLeft();
         this.updateView();
+        }
         break;
       case 38: //up arrow
+      if(this.isPlaying){
         this.game.rotatePiece();
         this.updateView();
+        }
                 break;
       case 39: //right arrow
+      if(this.isPlaying){
         this.game.movePieceRight();
         this.updateView();
+      }
                 break;
       case 40: //down arrow
-        this.game.movePieceDown();
+      if(this.isPlaying){ 
+      this.game.movePieceDown();
         this.updateView();
         this.stopTimer();
+      }
                 break;
     }
   }
